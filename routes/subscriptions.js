@@ -1,6 +1,6 @@
 const errors = require('restify-errors');
 const rjwt = require('restify-jwt-community');
-const subscription = require('../models/Subscription');
+const Subscription = require('../models/Subscription');
 const config = require('../config');
 
 module.exports = server => {
@@ -8,7 +8,8 @@ module.exports = server => {
   server.get('/subscriptions', async (req, res, next) => {
     try {
       const subscriptions = await Subscription.find({});
-      res.send(Subscriptions);
+      res.send(subscriptions);
+      console.log("Received Get");
       next();
     } catch (err) {
       return next(new errors.InvalidContentError(err));
@@ -42,10 +43,16 @@ module.exports = server => {
         );
       }
 
-      const { name} = req.body;
+      const {name, billingType, code, currency, isActive, maxSubmissionsPerMonth, price} = req.body;
 
       const subscription = new Subscription({
-        name
+        name, 
+        billingType, 
+        code,
+        currency, 
+        isActive,
+        maxSubmissionsPerMonth,
+        price
       });
 
       try {
